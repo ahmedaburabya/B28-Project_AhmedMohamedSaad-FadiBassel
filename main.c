@@ -1,57 +1,57 @@
 /*
- * B28 - Project (Master).c
+ * B28 - Project (Slave).c
  *
- * Created: 8/20/2021 4:15:41 PM
+ * Created: 8/21/2021 10:12:05 AM
  * Author : Ahmed Saad
  */ 
 
 #include <avr/io.h>
 #include "SPI.h"
 #include "LCD.h"
-#include "UART.h"
+#include "LED.h"
+
 
 int main(void)
 {
 	LCD_Initialization();
-	UART_Init();
-	SPI_Master_Init();
-	SPI_SlaveSelect(0);
+	LED0_Initialization();
+	LED1_Initialization();
+	LED2_Initialization();
+	SPI_Slave_Init();
+	uint8_t x = 0;
 	uint8_t* str = "No Data Received";
 	LCD_String(str);
-	uint8_t B_Data = 0;
 	while (1)
 	{
-		
-		B_Data = UART_Receive();
-		if(B_Data == 48)
+		x = SPI_Receive();
+		if(x == 48)
 		{
-			SPI_Transmit(B_Data);
-			str = "0 is pressed";
-			LCD_Clear();
-			LCD_String(str);
-			
-		}
-		else if(B_Data == 49)
-		{
-			SPI_Transmit(B_Data);
-			str = "1 is pressed";
+			str = "LED 0 is toggled";
+			LED0_TGL();
 			LCD_Clear();
 			LCD_String(str);
 		}
-		else if(B_Data == 50)
+		else if(x == 49)
 		{
-			SPI_Transmit(B_Data);
-			str = "2 is pressed";
+			str = "LED 1 is toggled";
+			LED1_TGL();
+			LCD_Clear();
+			LCD_String(str);
+		}
+		else if (x == 50)
+		{
+			str = "LED 2 is toggled";
+			LED2_TGL();
 			LCD_Clear();
 			LCD_String(str);
 		}
 		else
 		{
-			SPI_Transmit(B_Data);
-			str = "Choose 0, 1 or 2";
+			str = "Send 0, 1 or 2";
 			LCD_Clear();
 			LCD_String(str);
 		}
 		
 	}
 }
+
